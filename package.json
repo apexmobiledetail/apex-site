@@ -1,0 +1,8 @@
+{
+  "name": "apex-site",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@netlify/blobs": "^11.0.0"
+  }
+}

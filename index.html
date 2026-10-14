@@ -58,6 +58,8 @@ footer a{color:#fff}
 .hero{position:relative}
 .owner-mark{position:absolute;top:10px;left:max(10px,env(safe-area-inset-left,0px));z-index:2;display:flex;width:44px;height:44px;align-items:center;justify-content:center;color:#d9b8ff;opacity:.55;border-radius:10px;transition:opacity .2s}
 .owner-mark:hover,.owner-mark:focus-visible{opacity:1}
+.ch label[data-booked] span{opacity:.4;text-decoration:line-through}
+.ch label[data-booked] span::after{content:'Booked';display:block;font-size:14px;text-decoration:none;letter-spacing:1px}
 </style>
 </head>
 <body>
@@ -130,9 +132,9 @@ footer a{color:#fff}
 </form>
 <div id="done" role="status" tabindex="-1" style="display:none;border:2px solid var(--p);border-radius:16px;background:var(--card);padding:26px 18px;text-align:center">
 <div style="font:italic 800 42px/1 'Barlow Condensed',sans-serif;color:var(--p);text-transform:uppercase">Almost done!</div>
-<p style="font-size:22px;margin:14px 0 8px">Your Messages app should open with your booking filled in. <b>Press Send</b> and we will text you back to confirm.</p>
+<p style="font-size:22px;margin:14px 0 8px">Your time is held. Your Messages app should open with your booking filled in. <b>Press Send</b> and we will text you back to confirm. If it did not open, tap the button below.</p>
 <pre id="sum" style="white-space:pre-wrap;text-align:left;font:500 18px/1.4 system-ui,sans-serif;color:var(--mu);margin:14px 0"></pre>
-<a class="btn" id="again" href="#" style="display:flex">Messages Didn't Open? Tap Here</a>
+<a class="btn" id="again" href="#" style="display:flex">Send My Booking Text</a>
 <p class="note" style="margin-top:14px">Or call <a href="tel:+19175355543" style="color:#fff">917-535-5543</a> &middot; <a href="#book" id="edit" style="color:#fff">Change my booking</a></p>
 </div>
 </section>
@@ -147,7 +149,10 @@ function upd(){var p='$'+P[val('vehicle')][val('service')];$('#est').textContent
 document.querySelectorAll('input[type=radio]').forEach(function(r){r.addEventListener('change',upd)});
 document.querySelectorAll('[data-veh]').forEach(function(b){b.addEventListener('click',function(){$('input[name=vehicle][value="'+b.dataset.veh+'"]').checked=true;upd();$('#book').scrollIntoView({behavior:'smooth'})})});
 (function(){var d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());$('#date').min=d.toISOString().slice(0,10)})();
-function slots(){var v=$('#date').value,g=$('#tgrid'),pk=$('#tpick'),nt=$('#tnote');if(!v){g.style.display='none';pk.style.display='block';nt.style.display='none';return}var p=v.split('-'),d=new Date(+p[0],+p[1]-1,+p[2]),wk=d.getDay(),close=(wk===0||wk===6)?16:14,t=new Date(),today=d.toDateString()===t.toDateString(),left=0;document.querySelectorAll('[data-slot]').forEach(function(l){var h=+l.dataset.slot,r=l.querySelector('input'),show=h+2<=close,past=today&&t.getHours()>=h;l.style.display=show?'':'none';r.disabled=!show||past;if(r.disabled)r.checked=false;if(show&&!past)left++});g.style.gridTemplateColumns=close===16?'repeat(3,1fr)':'repeat(2,1fr)';g.style.display='grid';pk.style.display='none';nt.style.display=left?'none':'block'}
+var takenReq=0,hold=null;
+function markTaken(v,taken){if($('#date').value!==v)return;var left=0,t=new Date(),p=v.split('-'),d=new Date(+p[0],+p[1]-1,+p[2]),today=d.toDateString()===t.toDateString();document.querySelectorAll('[data-slot]').forEach(function(l){var h=+l.dataset.slot,r=l.querySelector('input'),booked=taken.indexOf(h)>=0;if(booked){l.setAttribute('data-booked','');r.disabled=true;r.checked=false}else{l.removeAttribute('data-booked')}if(l.style.display!=='none'&&!r.disabled)left++});$('#tnote').textContent=left?'':'No times left that day. Please pick another day.';$('#tnote').style.display=left?'none':'block'}
+function loadTaken(v){document.querySelectorAll('[data-slot]').forEach(function(l){l.removeAttribute('data-booked')});var n=++takenReq;fetch('/api/slots?date='+encodeURIComponent(v),{cache:'no-store'}).then(function(r){return r.ok?r.json():null}).then(function(j){if(n===takenReq&&j&&j.taken)markTaken(v,j.taken)}).catch(function(){})}
+function slots(){var v=$('#date').value,g=$('#tgrid'),pk=$('#tpick'),nt=$('#tnote');if(!v){g.style.display='none';pk.style.display='block';nt.style.display='none';return}var p=v.split('-'),d=new Date(+p[0],+p[1]-1,+p[2]),wk=d.getDay(),close=(wk===0||wk===6)?16:14,t=new Date(),today=d.toDateString()===t.toDateString(),left=0;document.querySelectorAll('[data-slot]').forEach(function(l){var h=+l.dataset.slot,r=l.querySelector('input'),show=h+2<=close,past=today&&t.getHours()>=h;l.style.display=show?'':'none';r.disabled=!show||past;if(r.disabled)r.checked=false;if(show&&!past)left++});g.style.gridTemplateColumns=close===16?'repeat(3,1fr)':'repeat(2,1fr)';g.style.display='grid';pk.style.display='none';nt.style.display=left?'none':'block';loadTaken(v)}
 $('#date').addEventListener('change',slots);$('#date').addEventListener('input',slots);
 function fmt(s){var p=s.split('-');return new Date(+p[0],+p[1]-1,+p[2]).toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'})}
 $('#f').addEventListener('submit',function(e){
@@ -157,11 +162,18 @@ if(miss.length){err.textContent='Please add '+miss.join(', ')+'.';err.style.disp
 err.style.display='none';upd();
 var m='Hi Apex Mobile Detail! I would like to book:\nName: '+$('#name').value.trim()+'\nPhone: '+$('#phone').value.trim()+'\nVehicle: '+val('vehicle')+'\nService: '+val('service')+' ('+$('#priceField').value+')\nDate: '+fmt($('#date').value)+'\nTime: '+val('time')+'\nAddress: '+$('#addr').value.trim()+($('#notes').value.trim()?'\nNotes: '+$('#notes').value.trim():'');
 var link='sms:+19175355543?&body='+encodeURIComponent(m);
-$('#sum').textContent=m;$('#again').href=link;
-$('#f').style.display='none';var d=$('#done');d.style.display='block';
-window.location.href=link;
+var dateV=$('#date').value,hourV=+$('input[name=time]:checked').dataset.h,go=$('#go');
+function finish(){go.disabled=false;go.textContent='Text My Booking';$('#sum').textContent=m;$('#again').href=link;$('#f').style.display='none';var d=$('#done');d.style.display='block';d.scrollIntoView({behavior:'smooth',block:'start'});window.location.href=link}
+go.disabled=true;go.textContent='Checking time...';
+var ctl=window.AbortController?new AbortController():null,tm=setTimeout(function(){if(ctl)ctl.abort()},8000);
+fetch('/api/slots',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({date:dateV,hour:hourV,name:$('#name').value.trim(),phone:$('#phone').value.trim()}),signal:ctl?ctl.signal:undefined})
+.then(function(r){clearTimeout(tm);if(r.status===409)return{taken:true};return r.ok?r.json():{}})
+.then(function(j){
+  if(j&&j.taken){go.disabled=false;go.textContent='Text My Booking';err.textContent='Sorry, someone just booked that time. Please pick another time.';err.style.display='block';loadTaken(dateV);document.getElementById('tl').scrollIntoView({behavior:'smooth',block:'center'});return}
+  hold=(j&&j.token)?{date:dateV,hour:hourV,token:j.token}:null;finish();
+}).catch(function(){clearTimeout(tm);hold=null;finish()});
 });
-$('#edit').addEventListener('click',function(){$('#done').style.display='none';$('#f').style.display='block'});
+$('#edit').addEventListener('click',function(){if(hold){fetch('/api/slots',{method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify(hold)}).catch(function(){}).then(function(){if($('#date').value)loadTaken($('#date').value)});hold=null}$('#done').style.display='none';$('#f').style.display='block'});
 </script>
 <script>
 try{history.scrollRestoration='manual'}catch(e){}
