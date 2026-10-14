@@ -48,9 +48,18 @@ form .btn{width:100%;font-size:26px;min-height:56px}
 .bar .btn{flex:1;min-height:48px;padding:0 10px;font-size:22px}
 footer{padding:26px 16px;text-align:center;color:var(--mu);font-style:italic;font-weight:700;text-transform:uppercase;letter-spacing:2px}
 footer a{color:#fff}
+.ticker{position:relative;overflow:hidden;background:linear-gradient(90deg,#5b21b6,#a855f7,#5b21b6);border-bottom:1px solid #d9b8ff;white-space:nowrap}
+.ticker-track{display:inline-flex;animation:tick 28s linear infinite;padding:9px 0}
+.ticker:hover .ticker-track{animation-play-state:paused}
+.ticker span{padding:0 28px;font:italic 800 19px 'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:1.5px;color:#fff}
+.ticker span::before{content:"\2726";margin-right:28px;color:#e9d5ff}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.ticker-track{animation:none;flex-wrap:wrap;white-space:normal;justify-content:center}.ticker-track span[aria-hidden]{display:none}}
 </style>
 </head>
 <body>
+<!-- TOP BANNER: edit the messages below -->
+<div class="ticker" role="marquee" aria-label="Announcements"><div class="ticker-track"><span>Now booking! Text 917-535-5543</span><span>We come to you</span><span>Mon - Fri 10 AM - 2 PM</span><span>Sat - Sun 10 AM - 4 PM</span><span>Sedan Full Wash $150</span><span aria-hidden="true">Now booking! Text 917-535-5543</span><span aria-hidden="true">We come to you</span><span aria-hidden="true">Mon - Fri 10 AM - 2 PM</span><span aria-hidden="true">Sat - Sun 10 AM - 4 PM</span><span aria-hidden="true">Sedan Full Wash $150</span></div></div>
 <header class="hero">
 <svg viewBox="0 58 760 314" width="100%" role="img" aria-label="Apex Mobile Detail" style="display:block;overflow:visible;max-width:640px;margin:0 auto">
 <defs>
