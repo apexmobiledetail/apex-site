@@ -55,12 +55,16 @@ footer a{color:#fff}
 .ticker span::before{content:"\2726";margin-right:28px;color:#e9d5ff}
 @keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @media (prefers-reduced-motion:reduce){.ticker-track{animation:none;flex-wrap:wrap;white-space:normal;justify-content:center}.ticker-track span[aria-hidden]{display:none}}
+.hero{position:relative}
+.owner-mark{position:absolute;top:10px;left:max(10px,env(safe-area-inset-left,0px));z-index:2;display:flex;width:44px;height:44px;align-items:center;justify-content:center;color:#d9b8ff;opacity:.55;border-radius:10px;transition:opacity .2s}
+.owner-mark:hover,.owner-mark:focus-visible{opacity:1}
 </style>
 </head>
 <body>
 <!-- TOP BANNER: edit the messages below -->
 <div class="ticker" role="marquee" aria-label="Grand Opening Sunday, October 18th"><div class="ticker-track"><span>Grand Opening Sunday, October 18th!</span><span>Grand Opening Sunday, October 18th!</span><span>Grand Opening Sunday, October 18th!</span><span aria-hidden="true">Grand Opening Sunday, October 18th!</span><span aria-hidden="true">Grand Opening Sunday, October 18th!</span><span aria-hidden="true">Grand Opening Sunday, October 18th!</span></div></div>
 <header class="hero">
+<a class="owner-mark" href="https://claude.ai/artifact/UPFgocY6HZTN84hyDbP3wK" target="_blank" rel="noopener" aria-label="Owner schedule" title="Apex"><svg viewBox="0 0 32 32" width="30" height="30" aria-hidden="true"><path d="M16 3 L29 16 L16 29 L3 16 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 9 L23 16 L16 23 L9 16 Z" fill="currentColor" opacity=".55"/></svg></a>
 <svg viewBox="0 58 760 314" width="100%" role="img" aria-label="Apex Mobile Detail" style="display:block;overflow:visible;max-width:640px;margin:0 auto">
 <defs>
 <linearGradient id="gA" gradientUnits="userSpaceOnUse" x1="0" y1="176" x2="0" y2="278"><stop offset="0" stop-color="#ffffff"/><stop offset="0.45" stop-color="#cdd4e4"/><stop offset="0.5" stop-color="#5d677f"/><stop offset="0.58" stop-color="#aab4c9"/><stop offset="1" stop-color="#f4f7fc"/></linearGradient>
@@ -133,7 +137,7 @@ footer a{color:#fff}
 </div>
 </section>
 </main>
-<footer>Apex Mobile Detail<br><a href="tel:+19175355543">917-535-5543</a><br>Shine. Every time.<br><span style="font-size:15px;letter-spacing:1px;opacity:.7">&copy; 2026 Apex Mobile Detail</span><br><a href="https://claude.ai/artifact/UPFgocY6HZTN84hyDbP3wK" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;margin-top:14px;padding:8px 14px;border:1px solid var(--line);border-radius:8px;font-size:15px;letter-spacing:1px;color:var(--mu);text-decoration:none"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Owner Schedule</a></footer>
+<footer>Apex Mobile Detail<br><a href="tel:+19175355543">917-535-5543</a><br>Shine. Every time.<br><span style="font-size:15px;letter-spacing:1px;opacity:.7">&copy; 2026 Apex Mobile Detail</span></footer>
 <nav class="bar" aria-label="Quick actions"><a class="btn" href="#book">Book Now</a><a class="btn alt" href="tel:+19175355543">Call</a></nav>
 <script>
 var P={Sedan:{"Full Wash":150,"Interior Only":100,"Exterior Only":100},SUV:{"Full Wash":175,"Interior Only":125,"Exterior Only":125},Truck:{"Full Wash":200,"Interior Only":150,"Exterior Only":150}};
